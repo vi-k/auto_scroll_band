@@ -25,6 +25,11 @@ analyzer:
     # Packages
     - 'packages/advertising_id/**'
     - 'packages/flutter_facebook_sdk-1.0.0/**'
+    - android/**
+    - ios/**
+    - windows/**
+    - macos/**
+    - linux/**
 
   strong-mode:
     implicit-casts: false
@@ -52,13 +57,11 @@ analyzer:
     cancel_subscriptions: error
     close_sinks: error
     valid_regexps: error
-    always_require_non_null_named_parameters: error
 
 linter:
   rules:
     # Disabled
     always_specify_types: false
-    avoid_as: false
     avoid_redundant_argument_values: false
     comment_references: false # Unused because https://github.com/dart-lang/sdk/issues/36974
     flutter_style_todos: false
@@ -88,7 +91,6 @@ linter:
     avoid_implementing_value_types: true
     avoid_js_rounded_ints: true
     avoid_renaming_method_parameters: true
-    avoid_returning_null_for_future: true
     avoid_returning_null_for_void: true
     avoid_single_cascade_in_expression_statements: true
     avoid_slow_async_io: true
@@ -101,11 +103,8 @@ linter:
     close_sinks: true
     control_flow_in_finally: true
     empty_statements: true
-    invariant_booleans: true
-    iterable_contains_unrelated_type: true
     join_return_with_assignment: true
     leading_newlines_in_multiline_strings: true
-    list_remove_unrelated_type: true
     literal_only_boolean_expressions: true
     missing_whitespace_between_adjacent_strings: true
     no_adjacent_strings_in_list: true
@@ -155,7 +154,6 @@ linter:
 
     # Pedantic 1.9.0
     always_declare_return_types: true
-    always_require_non_null_named_parameters: true
     annotate_overrides: true
     avoid_empty_else: true
     avoid_init_to_null: true
@@ -177,7 +175,6 @@ linter:
     prefer_collection_literals: true
     prefer_conditional_assignment: true
     prefer_contains: true
-    prefer_equal_for_default_values: true
     prefer_final_fields: true
     prefer_for_elements_to_map_fromIterable: true
     prefer_generic_function_type_aliases: true
@@ -222,7 +219,6 @@ linter:
     prefer_mixin: true
     use_setters_to_change_properties: true
     avoid_setters_without_getters: true
-    avoid_returning_null: true
     avoid_returning_this: true
     type_annotate_public_apis: true
     avoid_types_on_closure_parameters: true
