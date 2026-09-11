@@ -7,22 +7,10 @@ void main() {
   group('ScrollAxisAlign', () {
     test('constants have expected values and relationships', () {
       expect(ScrollAxisAlign.nearest.value.isNaN, isTrue);
-      expect(ScrollAxisAlign.nearest.value.isFinite, isFalse);
 
       expect(ScrollAxisAlign.start.value, 0);
       expect(ScrollAxisAlign.center.value, 0.5);
       expect(ScrollAxisAlign.end.value, 1);
-
-      // Counter-checks: values must be distinct and ordered
-      expect(ScrollAxisAlign.start.value,
-          isNot(equals(ScrollAxisAlign.center.value)));
-      expect(ScrollAxisAlign.center.value,
-          isNot(equals(ScrollAxisAlign.end.value)));
-      expect(ScrollAxisAlign.start.value,
-          isNot(equals(ScrollAxisAlign.end.value)));
-      expect(
-          ScrollAxisAlign.start.value < ScrollAxisAlign.center.value, isTrue);
-      expect(ScrollAxisAlign.center.value < ScrollAxisAlign.end.value, isTrue);
     });
 
     test('isExactAlign returns true for finite values and false for NaN', () {
@@ -40,25 +28,19 @@ void main() {
     test('reverse mirrors finite alignments and preserves NaN for nearest', () {
       final reversedStart = ScrollAxisAlign.start.reverse;
       expect(reversedStart.value, 1);
-      expect(reversedStart.value, equals(ScrollAxisAlign.end.value));
-      expect(reversedStart.value, isNot(equals(ScrollAxisAlign.start.value)));
       expect(reversedStart.isExactAlign, isTrue);
 
       final reversedEnd = ScrollAxisAlign.end.reverse;
       expect(reversedEnd.value, 0);
-      expect(reversedEnd.value, equals(ScrollAxisAlign.start.value));
-      expect(reversedEnd.value, isNot(equals(ScrollAxisAlign.end.value)));
       expect(reversedEnd.isExactAlign, isTrue);
 
       final reversedCenter = ScrollAxisAlign.center.reverse;
       expect(reversedCenter.value, 0.5);
-      expect(reversedCenter.value, equals(ScrollAxisAlign.center.value));
       expect(reversedCenter.isExactAlign, isTrue);
 
       const custom = ScrollAxisAlign(0.2);
       final reversedCustom = custom.reverse;
       expect(reversedCustom.value, closeTo(0.8, 1e-9));
-      expect(reversedCustom.value, isNot(equals(custom.value)));
       expect(reversedCustom.reverse.value, closeTo(0.2, 1e-9));
 
       final reversedNearest = ScrollAxisAlign.nearest.reverse;
@@ -90,15 +72,7 @@ void main() {
       const offset = Offset(15.5, 42);
 
       expect(ScrollBandController.axisOffset(Axis.horizontal, offset), 15.5);
-      // Counter-check: horizontal must not return dy
-      expect(ScrollBandController.axisOffset(Axis.horizontal, offset),
-          isNot(equals(42)));
-
       expect(ScrollBandController.axisOffset(Axis.vertical, offset), 42);
-      // Counter-check: vertical must not return dx
-      expect(ScrollBandController.axisOffset(Axis.vertical, offset),
-          isNot(equals(15.5)));
-
       const negativeOffset = Offset(-10, 25);
       expect(ScrollBandController.axisOffset(Axis.horizontal, negativeOffset),
           -10);
@@ -113,15 +87,7 @@ void main() {
       const size = Size(120, 340);
 
       expect(ScrollBandController.axisSize(Axis.horizontal, size), 120);
-      // Counter-check: horizontal must not return height
-      expect(ScrollBandController.axisSize(Axis.horizontal, size),
-          isNot(equals(340)));
-
       expect(ScrollBandController.axisSize(Axis.vertical, size), 340);
-      // Counter-check: vertical must not return width
-      expect(ScrollBandController.axisSize(Axis.vertical, size),
-          isNot(equals(120)));
-
       expect(ScrollBandController.axisSize(Axis.horizontal, Size.zero), 0);
       expect(ScrollBandController.axisSize(Axis.vertical, Size.zero), 0);
     });
@@ -132,16 +98,8 @@ void main() {
       // Horizontal padding is left + right = 10 + 30 = 40
       expect(
           ScrollBandController.axisTotalPadding(Axis.horizontal, padding), 40);
-      // Counter-check: horizontal must not return vertical total
-      expect(ScrollBandController.axisTotalPadding(Axis.horizontal, padding),
-          isNot(equals(70)));
-
       // Vertical padding is top + bottom = 20 + 50 = 70
       expect(ScrollBandController.axisTotalPadding(Axis.vertical, padding), 70);
-      // Counter-check: vertical must not return horizontal total
-      expect(ScrollBandController.axisTotalPadding(Axis.vertical, padding),
-          isNot(equals(40)));
-
       const directionalPadding = EdgeInsetsDirectional.fromSTEB(5, 12, 15, 28);
       expect(
           ScrollBandController.axisTotalPadding(
@@ -202,11 +160,6 @@ void main() {
       expect(child1, equals(expectedChild1));
       expect(child2, equals(expectedChild2));
 
-      // Counter-checks: distinct indices must yield distinct render boxes
-      expect(child0, isNot(equals(child1)));
-      expect(child1, isNot(equals(child2)));
-      expect(child0, isNot(equals(child2)));
-
       // Out-of-bounds indices must return null
       expect(ScrollBandController.childByIndex(renderFlex, 3), isNull);
       expect(ScrollBandController.childByIndex(renderFlex, 10), isNull);
@@ -214,8 +167,6 @@ void main() {
       // Negative index returns firstChild because the loop condition `0 < index` is false
       final childNegative = ScrollBandController.childByIndex(renderFlex, -1);
       expect(childNegative, equals(expectedChild0));
-      expect(childNegative, isNot(isNull));
-      expect(childNegative, isNot(equals(expectedChild1)));
     });
 
     testWidgets(
@@ -300,10 +251,6 @@ void main() {
       expect(flex.children[2].key, const Key('item_1'));
       expect(identical(flex.children[3], sep), isTrue);
       expect(flex.children[4].key, const Key('item_2'));
-
-      // Counter-checks: separator must not precede first item or follow last item
-      expect(identical(flex.children[0], sep), isFalse);
-      expect(identical(flex.children[4], sep), isFalse);
     });
 
     testWidgets(
@@ -332,9 +279,6 @@ void main() {
       final separator = flex.children[1] as SizedBox;
       expect(separator.width, 14);
       expect(separator.height, isNull);
-
-      // Counter-check: horizontal spacing must not set height
-      expect(separator.height, isNot(equals(14)));
     });
 
     testWidgets(
@@ -363,9 +307,6 @@ void main() {
       final separator = flex.children[1] as SizedBox;
       expect(separator.height, 22);
       expect(separator.width, isNull);
-
-      // Counter-check: vertical spacing must not set width
-      expect(separator.width, isNot(equals(22)));
     });
 
     testWidgets('null spacing and separator leaves children list unmodified',
@@ -403,8 +344,6 @@ void main() {
       );
       final flexWithSpacing = tester.widget<Flex>(find.byType(Flex));
       expect(flexWithSpacing.children, isEmpty);
-      // Counter-check: no orphan separator widget created
-      expect(flexWithSpacing.children.length, isNot(equals(1)));
 
       await tester.pumpWidget(
         const Directionality(
@@ -447,8 +386,6 @@ void main() {
       final flexWithSpacing = tester.widget<Flex>(find.byType(Flex));
       expect(flexWithSpacing.children.length, 1);
       expect(flexWithSpacing.children.first.key, const Key('only_child'));
-      // Counter-check: no leading or trailing separator
-      expect(flexWithSpacing.children.length, isNot(equals(2)));
 
       await tester.pumpWidget(
         const Directionality(
@@ -490,7 +427,6 @@ void main() {
       );
       final rowFlex = tester.widget<Flex>(find.byType(Flex));
       expect(rowFlex.direction, Axis.horizontal);
-      expect(rowFlex.direction, isNot(equals(Axis.vertical)));
 
       await tester.pumpWidget(
         const Directionality(
@@ -500,7 +436,6 @@ void main() {
       );
       final columnFlex = tester.widget<Flex>(find.byType(Flex));
       expect(columnFlex.direction, Axis.vertical);
-      expect(columnFlex.direction, isNot(equals(Axis.horizontal)));
     });
 
     testWidgets('SeparatedFlex forwards default configuration to nested Flex',
@@ -524,13 +459,6 @@ void main() {
       expect(flex.clipBehavior, Clip.none);
       expect(flex.textDirection, isNull);
       expect(flex.textBaseline, isNull);
-
-      // Counter-checks: defaults must differ from non-default alternatives
-      expect(flex.mainAxisAlignment, isNot(equals(MainAxisAlignment.center)));
-      expect(flex.mainAxisSize, isNot(equals(MainAxisSize.max)));
-      expect(flex.crossAxisAlignment, isNot(equals(CrossAxisAlignment.start)));
-      expect(flex.verticalDirection, isNot(equals(VerticalDirection.up)));
-      expect(flex.clipBehavior, isNot(equals(Clip.hardEdge)));
     });
 
     testWidgets('SeparatedFlex forwards custom properties to nested Flex',
@@ -561,16 +489,6 @@ void main() {
       expect(flex.verticalDirection, VerticalDirection.up);
       expect(flex.textBaseline, TextBaseline.alphabetic);
       expect(flex.clipBehavior, Clip.antiAlias);
-
-      // Counter-checks: custom values must differ from SeparatedFlex defaults
-      expect(flex.direction, isNot(equals(Axis.horizontal)));
-      expect(flex.mainAxisAlignment, isNot(equals(MainAxisAlignment.start)));
-      expect(flex.mainAxisSize, isNot(equals(MainAxisSize.min)));
-      expect(flex.crossAxisAlignment, isNot(equals(CrossAxisAlignment.center)));
-      expect(flex.textDirection, isNot(equals(TextDirection.ltr)));
-      expect(flex.verticalDirection, isNot(equals(VerticalDirection.down)));
-      expect(flex.textBaseline, isNot(equals(TextBaseline.ideographic)));
-      expect(flex.clipBehavior, isNot(equals(Clip.none)));
     });
   });
 }
